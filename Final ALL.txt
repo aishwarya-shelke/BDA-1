@@ -1,0 +1,1792 @@
+[hadoop@client36 Shreyas]$ cd $HADOOP_HOME/sbin/
+[hadoop@client36 sbin]$ ./start-dfs.sh
+[hadoop@client36 sbin]$ ./start-yarn.sh
+
+https://intellipaat.com/blog/tutorial/hadoop-tutorial/hdfs-operations/
+
+*******************************Slip 1*******************************
+
+1 Execute the following HDFS commands on Hadoop environment. [10]
+a) Remove a demo directory from Hadoop environment. (Create a demo directory).
+b) Create a student.txt file in Hadoop environment and copy this file in root directory.
+c) display the content of student.txt file.
+d) expunge command
+e) df command 
+
+a) Remove a demo directory from Hadoop environment. (Create a demo directory)
+hadoop fs -rm /demo/t1.txt
+
+b) Create a student.txt file in Hadoop environment and copy this file in root directory.
+hadoop fs -touchz /Regina/student.txt 
+hadoop fs -copyToLocal /Regina/student.txt /Desktop
+
+c) display the content of student.txt file.
+hadoop fs -cat /Regina/student.txt
+
+d) expunge command
+hadoop fs -expunge 
+
+e) df command 
+hadoop fs -df 
+
+//Program 
+from mrjob.job import MRJob
+from re import compile
+
+WORD_RE = compile(r"[\w']+")
+
+class WordCount(MRJob):
+
+    def mapper(self, key, value):
+        for word in WORD_RE.findall(value):
+            yield word.lower(), 1
+    
+    def reducer(self, key, values):
+        yield key, sum(values)
+        
+if __name__ == '__main__':
+    WordCount.run()
+
+// run program 
+pip install mrjob 
+python WordCount.py sample.txt 
+
+***********************************************Slip 2 **********************************
+
+[hadoop@client36 Shreyas]$ cd $HADOOP_HOME/sbin/
+[hadoop@client36 sbin]$ ./start-dfs.sh
+[hadoop@client36 sbin]$ ./start-yarn.sh
+
+https://intellipaat.com/blog/tutorial/hadoop-tutorial/hdfs-operations/
+
+1 A) Show practical examples to list files, Insert data, retrieving data,append to file and
+shutting down HDFS.
+
+1.ls list files
+[hadoop@client36 Shreyas]$ hadoop fs -ls /
+
+2.Insert data
+hadoop fs -put /Desktop/h.txt /Regina
+
+3.retrive data 
+hadoop fs -cat /Regina/h.txt
+
+4.appendToFile
+hadoop fs -appendToFile Desktop/data.txt /test/test.txt
+
+5.Shutting down
+stop-dfs.sh
+
+// Program 
+from mrjob.job import MRJob
+
+class WeatherStats(MRJob):
+    
+    def mapper(self, key, value):
+        try:
+            d, tmax, tmin, tavg = value.split(',')
+            yield d, float(tavg)
+        except ValueError:
+            pass
+
+    def reducer(self, key, values):
+        for avg in values:
+            yield key, "Cool" if avg < 50 else "Shiny"
+        
+if __name__ == '__main__':
+    WeatherStats.run()
+
+// run the program 
+pip install mrjob
+python Weatherdata.py Weatherdata.csv
+
+**************************************************SLip 3***************************************
+[hadoop@client36 Shreyas]$ cd $HADOOP_HOME/sbin/
+
+[hadoop@client36 sbin]$ ./start-dfs.sh
+Starting namenodes on [client36.hadoop.lan]
+client36.hadoop.lan: namenode running as process 6237. Stop it first.
+localhost: starting datanode, logging to /opt/hadoop/logs/hadoop-hadoop-datanode-client36.out
+Starting secondary namenodes [0.0.0.0]
+0.0.0.0: starting secondarynamenode, logging to /opt/hadoop/logs/hadoop-hadoop-secondarynamenode-client36.out
+
+[hadoop@client36 sbin]$ ./start-yarn.sh
+starting yarn daemons
+starting resourcemanager, logging to /opt/hadoop/logs/yarn-hadoop-resourcemanager-client36.out
+localhost: starting nodemanager, logging to /opt/hadoop/logs/yarn-hadoop-nodemanager-client36.out
+
+
+https://intellipaat.com/blog/tutorial/hadoop-tutorial/hdfs-operations/
+
+Q.1 Execute the following HDFS commands on Hadoop environment. [10]
+a) Create a emp.txt file in root directory and move this file in Hadoop environment.
+[hadoop@client29 Assignment2]$ cd $HADOOP_HOME/sbin
+
+[hadoop@client29 Assignment2]$ ./start-all.sh
+
+1. touchz
+
+[hadoop@client29 Assignment2]$ hadoop fs -touchz /test/test.txt
+
+[hadoop@client29 Assignment2]$ hadoop fs -ls /test
+Found 1 items
+-rw-r--r--   3 hadoop supergroup          0 2022-12-01 12:33 /test/test.txt
+
+b) display the statistics about the file.(use default format).
+
+4. stat
+
+[hadoop@client25 ~]$ hadoop fs -stat /test/test.txt
+2022-12-01 08:01:49
+c) change the permission of the file.
+6. chown
+
+[hadoop@client36 Shreyas]$ hadoop fs -ls /
+Found 12 items
+drwxr-xr-x   - hadoop supergroup          0 2022-11-24 14:15 /AA
+drwxr-xr-x   - hadoop supergroup          0 2022-11-24 14:02 /AD
+drwxr-xr-x   - hadoop supergroup          0 2022-11-24 13:59 /AbhiDahi
+drwxr-xr-x   - hadoop supergroup          0 2022-11-24 14:24 /CC
+drwxr-xr-x   - hadoop supergroup          0 2022-11-19 15:13 /Disha
+-rw-r--r--   3 hadoop supergroup      15841 2022-11-19 14:44 /Hadoop_File
+-rw-r--r--   3 hadoop supergroup          7 2022-11-19 14:35 /Hadoop_File1
+drwxr-xr-x   - hadoop supergroup          0 2022-11-19 15:08 /Sakshi
+drwxr-xr-x   - hadoop supergroup          0 2022-11-19 15:34 /Tejashree
+drwxr-xr-x   - hadoop supergroup          0 2022-11-19 15:34 /Tejashree1
+-rw-r--r--   3 hadoop supergroup          7 2022-11-19 14:48 /ha
+drwxr-xr-x   - hadoop supergroup          0 2022-11-24 15:43 /test
+
+[hadoop@client36 Shreyas]$ hadoop fs -chown sdf /test/
+
+[hadoop@client36 Shreyas]$ hadoop fs -ls /
+Found 12 items
+drwxr-xr-x   - hadoop supergroup          0 2022-11-24 14:15 /AA
+drwxr-xr-x   - hadoop supergroup          0 2022-11-24 14:02 /AD
+drwxr-xr-x   - hadoop supergroup          0 2022-11-24 13:59 /AbhiDahi
+drwxr-xr-x   - hadoop supergroup          0 2022-11-24 14:24 /CC
+drwxr-xr-x   - hadoop supergroup          0 2022-11-19 15:13 /Disha
+-rw-r--r--   3 hadoop supergroup      15841 2022-11-19 14:44 /Hadoop_File
+-rw-r--r--   3 hadoop supergroup          7 2022-11-19 14:35 /Hadoop_File1
+drwxr-xr-x   - hadoop supergroup          0 2022-11-19 15:08 /Sakshi
+drwxr-xr-x   - hadoop supergroup          0 2022-11-19 15:34 /Tejashree
+drwxr-xr-x   - hadoop supergroup          0 2022-11-19 15:34 /Tejashree1
+-rw-r--r--   3 hadoop supergroup          7 2022-11-19 14:48 /ha
+drwxr-xr-x   - sdf    supergroup          0 2022-11-24 15:43 /test
+
+d) implement checksum command
+
+9. checksum
+
+[hadoop@client25 ~]$ hadoop fs -checksum /test/test.txt
+/test/test.txt	MD5-of-0MD5-of-512CRC32C	00000200000000000000000056dcbdcc8aefb04f02fdd936dc4d823b
+
+
+e) delete emp.txt file.
+4. rm
+
+[hadoop@client36 Shreyas]$ hadoop fs -ls /test
+Found 4 items
+-rw-r--r--   3 hadoop supergroup         10 2022-11-24 14:42 /test/a2.txt
+-rw-r--r--   3 hadoop supergroup         10 2022-11-24 15:21 /test/a3.txt
+-rw-r--r--   3 hadoop supergroup          6 2022-11-24 15:30 /test/h.txt
+-rw-r--r--   3 hadoop supergroup         13 2022-11-24 14:38 /test/hello.txt
+
+[hadoop@client36 Shreyas]$ hadoop fs -rm /test/h.txt
+Deleted /test/h.txt
+
+
+
+**************************************** sLip 4*************************************
+
+[hadoop@client36 Shreyas]$ cd $HADOOP_HOME/sbin/
+
+[hadoop@client36 sbin]$ ./start-dfs.sh
+Starting namenodes on [client36.hadoop.lan]
+client36.hadoop.lan: namenode running as process 6237. Stop it first.
+localhost: starting datanode, logging to /opt/hadoop/logs/hadoop-hadoop-datanode-client36.out
+Starting secondary namenodes [0.0.0.0]
+0.0.0.0: starting secondarynamenode, logging to /opt/hadoop/logs/hadoop-hadoop-secondarynamenode-client36.out
+
+[hadoop@client36 sbin]$ ./start-yarn.sh
+starting yarn daemons
+starting resourcemanager, logging to /opt/hadoop/logs/yarn-hadoop-resourcemanager-client36.out
+localhost: starting nodemanager, logging to /opt/hadoop/logs/yarn-hadoop-nodemanager-client36.out
+
+
+https://intellipaat.com/blog/tutorial/hadoop-tutorial/hdfs-operations/
+
+Q.1 Execute the following HDFS commands on Hadoop environment. [10]
+a) Create a emp.txt file in root directory and move this file in Hadoop environment.
+
+ create file in  local folder
+ movefromLocal or put
+1. moveFromLocal
+
+[hadoop@client36 Shreyas]$ ls -l
+total 28
+-rw-rw-r--. 1 hadoop hadoop 4428 Nov 24 15:24 a1.txt
+-rw-rw-r--. 1 hadoop hadoop  703 Nov 24 15:26 a2.txt
+-rw-rw-r--. 1 hadoop hadoop   13 Nov 24 14:38 hello.txt
+-rw-r--r--. 1 hadoop hadoop    6 Nov 24 15:25 h.txt
+-rw-rw-r--. 1 hadoop hadoop   10 Nov 24 14:41 test.txt
+-rw-r--r--. 1 hadoop hadoop   10 Nov 24 14:44 tst.txt
+
+[hadoop@client36 Shreyas]$ hadoop fs -moveFromLocal ~/Desktop/Shreyas/h.txt /test/
+
+[hadoop@client36 Shreyas]$ hadoop fs -ls /test
+Found 4 items
+-rw-r--r--   3 hadoop supergroup         10 2022-11-24 14:42 /test/a2.txt
+-rw-r--r--   3 hadoop supergroup         10 2022-11-24 15:21 /test/a3.txt
+-rw-r--r--   3 hadoop supergroup          6 2022-11-24 15:30 /test/h.txt
+-rw-r--r--   3 hadoop supergroup         13 2022-11-24 14:38 /test/hello.txt
+4. put
+
+[hadoop@client36 Shreyas]$ ls -l
+total 12
+-rw-rw-r--. 1 hadoop hadoop 2257 Nov 24 14:40 a1.txt
+-rw-rw-r--. 1 hadoop hadoop   13 Nov 24 14:38 hello.txt
+
+[hadoop@client36 Shreyas]$ hadoop fs -put hello.txt /test/
+
+[hadoop@client36 Shreyas]$ hadoop fs -ls /test
+
+Found 1 items
+-rw-r--r--   3 hadoop supergroup         13 2022-11-24 14:38 /test/hello.txt
+
+b) Display last few lines of the above emp.txt file.
+3. tail
+
+
+[hadoop@client36 Shreyas]$ hadoop fs -tail -f /test/h.txt
+Hieee
+.
+c) du command
+
+9. du
+
+[hadoop@client36 Shreyas]$ hadoop fs -du /
+0      /AA
+0      /AD
+13     /AbhiDahi
+0      /CC
+7      /Disha
+15841  /Hadoop_File
+7      /Hadoop_File1
+7      /Sakshi
+13     /Tejashree
+6      /Tejashree1
+7      /ha
+33     /test
+
+d) df command
+
+[hadoop@client36 Shreyas]$ hadoop fs -df
+Filesystem                              Size    Used    Available  Use%
+hdfs://client36.hadoop.lan:9000  53660876800  135168  32822435840    0%
+
+e) fsck
+11. fsck
+
+[hadoop@client36 Shreyas]$ hadoop fsck /
+DEPRECATED: Use of this script to execute hdfs command is deprecated.
+Instead use the hdfs command for it.
+
+Connecting to namenode via http://client36.hadoop.lan:50070/fsck?ugi=hadoop&path=%2F
+FSCK started by hadoop (auth:SIMPLE) from /192.168.100.123 for path / at Thu Nov 24 16:02:34 IST 2022
+.
+/AbhiDahi/a1.txt:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741839_1015. Target Replicas is 3 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+.
+/AbhiDahi/a5.txt:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741838_1014. Target Replicas is 3 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+.
+/Disha/a1.txt:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741834_1010. Target Replicas is 3 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+.
+/Hadoop_File:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741831_1007. Target Replicas is 3 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+.
+/Hadoop_File1:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741828_1004. Target Replicas is 3 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+.
+/Sakshi/Tejashree/a1.txt:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741833_1009. Target Replicas is 3 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+...
+/Tejashree/a1.txt:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741835_1011. Target Replicas is 3 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+.
+/Tejashree/a5.txt:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741837_1013. Target Replicas is 3 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+.
+/Tejashree1/a5.txt:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741836_1012. Target Replicas is 3 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+.
+/ha:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741832_1008. Target Replicas is 3 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+.
+/test/a2.txt:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741841_1017. Target Replicas is 5 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+.
+/test/a3.txt:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741842_1018. Target Replicas is 5 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+.
+/test/hello.txt:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741840_1016. Target Replicas is 5 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+Status: HEALTHY
+ Total size:	15934 B
+ Total dirs:	18
+ Total files:	15
+ Total symlinks:		0
+ Total blocks (validated):	13 (avg. block size 1225 B)
+ Minimally replicated blocks:	13 (100.0 %)
+ Over-replicated blocks:	0 (0.0 %)
+ Under-replicated blocks:	13 (100.0 %)
+ Mis-replicated blocks:		0 (0.0 %)
+ Default replication factor:	3
+ Average block replication:	1.0
+ Corrupt blocks:		0
+ Missing replicas:		32 (71.111115 %)
+ Number of data-nodes:		1
+ Number of racks:		1
+FSCK ended at Thu Nov 24 16:02:34 IST 2022 in 14 milliseconds
+
+
+The filesystem under path '/' is HEALTHY
+
+
+*********************************************************
+
+from mrjob.job import MRJob
+from mrjob.step import MRStep
+
+class Electricity1(MRJob):
+    
+    def mapper(self, _, line):
+        record = line.split()
+        for key in record[1:]:
+            yield int(record[0]), int(key) 
+            
+    def reducer(self, key, values):
+        yield key, max(values)
+    
+
+class Electricity2(MRJob):
+    
+    def mapper(self, _, line):
+        record = line.split()
+        for key in record[1:]:
+            yield int(record[0]), int(key) 
+            
+    def reducer(self, key, values):
+        yield key, min(values)
+
+if __name__ == '__main__':
+    Electricity1.run()
+    Electricity2.run()
+
+
+*********************************************************
+
+from mrjob.job import MRJob
+
+class Electricity(MRJob):
+    
+    def mapper(self, _, line):
+        try:
+            record = line.split(',')
+            for key in record[1:-1]:
+                yield int(record[0]), int(key)
+        except ValueError:
+            pass
+            
+    def reducer(self, key, values):
+        val = list(values)
+        yield key, f'Max: {max(val)}, Min: {min(val)}'
+
+if __name__ == '__main__':
+    Electricity.run()
+*********************************************** SLip 5 ***********************************
+
+[hadoop@client36 Shreyas]$ cd $HADOOP_HOME/sbin/
+
+[hadoop@client36 sbin]$ ./start-dfs.sh
+Starting namenodes on [client36.hadoop.lan]
+client36.hadoop.lan: namenode running as process 6237. Stop it first.
+localhost: starting datanode, logging to /opt/hadoop/logs/hadoop-hadoop-datanode-client36.out
+Starting secondary namenodes [0.0.0.0]
+0.0.0.0: starting secondarynamenode, logging to /opt/hadoop/logs/hadoop-hadoop-secondarynamenode-client36.out
+
+[hadoop@client36 sbin]$ ./start-yarn.sh
+starting yarn daemons
+starting resourcemanager, logging to /opt/hadoop/logs/yarn-hadoop-resourcemanager-client36.out
+localhost: starting nodemanager, logging to /opt/hadoop/logs/yarn-hadoop-nodemanager-client36.out
+
+
+https://intellipaat.com/blog/tutorial/hadoop-tutorial/hdfs-operations/
+
+Q. 1 Execute the following HDFS commands on Hadoop environment. [10]
+a. count the number of files and directories in HDFS.(Use options for the command)
+10. count
+
+[hadoop@client25 ~]$ hadoop fs -count /
+          25           28              12214 /
+
+b. find
+11. find
+
+[hadoop@client25 ~]$ hadoop fs -find / test
+/
+/AA
+/AA/AA
+/AA/AA/a1.tx
+/Abhi
+/Abhi/a2.txt
+/Abhishek1
+/Abhishek2
+/Abhishek2/a1.txt
+/Abhishek2/a2.txt
+/Aish
+/Aish/abc.txt
+/Aishwarya
+/Aishwarya1
+/Aishwarya1/abc.txt
+/Aishwarya1/moveTo
+/Aishwarya1/moveTo/moved.txt
+/Aishwarya1/xyz.txt
+/F1
+/Hadoop_File
+/Sakshi
+/Sakshi1
+/Sakshi1/a2.txt
+/elevennov
+/elevennov/data1.txt
+/elevennov/demo.txt
+/f1
+/f2
+/f2/a2.txt
+/f3
+/f3/a1.txt
+/f3/a2.txt
+/msc
+/pj
+/pj2
+/pj2/moveTo
+/pj2/moveTo/moved.txt
+/pj2/moveTo/moved_cp.txt
+/pj2/welcome1.txt
+/prasad
+/prasad20
+/prasadj
+/sk
+/sk2
+/sonu
+/sonu/data.txt
+/sonu/hello1.txt
+/sonu/moveTo
+/sonu/moveTo/data.txt
+/sonu/moveTo/moved.txt
+/sonu/moveTo/moved_cp.txt
+/test
+/test/test.txt
+find: `test': No such file or directory
+c. getmerge
+12. getmerge
+
+[hadoop@client25 ~]$ hadoop fs -getmerge /test hello.txt
+[hadoop@client25 ~]$ cat hello.txt 
+Get rekt!
+Hello
+World
+
+Have a nice day!
+
+d. usage
+5. usage
+
+[hadoop@client25 ~]$ hadoop fs -usage ls
+Usage: hadoop fs [generic options] -ls [-C] [-d] [-h] [-q] [-R] [-t] [-S] [-r] [-u] [<path> ...]
+
+e. test
+2. test
+
+[hadoop@client29 Assignment2]$ hadoop fs -help test
+-test -[defsz] <path> :
+  Answer various questions about <path>, with result via exit status.
+    -d  return 0 if <path> is a directory.
+    -e  return 0 if <path> exists.
+    -f  return 0 if <path> is a file.
+    -s  return 0 if file <path> is greater         than zero bytes in size.
+    -w  return 0 if file <path> exists         and write permission is granted.
+    -r  return 0 if file <path> exists         and read permission is granted.
+    -z  return 0 if file <path> is         zero bytes in size, else return 1.
+
+[hadoop@client29 Assignment2]$ hadoop fs -test -e /test/test.txt
+[hadoop@client29 Assignment2]$ echo $?
+0
+[hadoop@client29 Assignment2]$ hadoop fs -test -e /test/test.sdf
+[hadoop@client29 Assignment2]$ echo $?
+1
+
+
+
+
+*********************************************************
+
+
+from mrjob.job import MRJob
+
+class WebsiteStats(MRJob):
+    
+    def mapper(self, key, value):
+        try:
+            records = value.split(',')
+            for record in records[1:-1]:
+                yield records[0], int(record)
+        except ValueError:
+            pass
+        
+    def reducer(self, key, values):
+        val = list(values)
+        yield key, f'Min: {min(val)}, Max: {max(val)}'
+        
+if __name__ == '__main__':
+    WebsiteStats.run()
+
+
+
+*************************************** slip 6***********************************
+
+[hadoop@client36 Shreyas]$ cd $HADOOP_HOME/sbin/
+
+[hadoop@client36 sbin]$ ./start-dfs.sh
+Starting namenodes on [client36.hadoop.lan]
+client36.hadoop.lan: namenode running as process 6237. Stop it first.
+localhost: starting datanode, logging to /opt/hadoop/logs/hadoop-hadoop-datanode-client36.out
+Starting secondary namenodes [0.0.0.0]
+0.0.0.0: starting secondarynamenode, logging to /opt/hadoop/logs/hadoop-hadoop-secondarynamenode-client36.out
+
+[hadoop@client36 sbin]$ ./start-yarn.sh
+starting yarn daemons
+starting resourcemanager, logging to /opt/hadoop/logs/yarn-hadoop-resourcemanager-client36.out
+localhost: starting nodemanager, logging to /opt/hadoop/logs/yarn-hadoop-nodemanager-client36.out
+
+
+https://intellipaat.com/blog/tutorial/hadoop-tutorial/hdfs-operations/
+
+Q.1 Execute the following HDFS commands on Hadoop environment. [10]
+a) Create a studentdata.txt file in Hadoop environment and move this file to root
+directory.
+  1. touchz
+
+[hadoop@client29 Assignment2]$ hadoop fs -touchz /test/test.txt
+
+[hadoop@client29 Assignment2]$ hadoop fs -ls /test
+Found 1 items
+-rw-r--r--   3 hadoop supergroup          0 2022-12-01 12:33 /test/test.txt
+
+2. moveToLocal
+
+[hadoop@client36 Shreyas]$ hadoop fs -moveToLocal /test/h.txt ~/Desktop/Shreyas/atest.txt
+moveToLocal: Option '-moveToLocal' is not implemented yet.
+
+6. get
+
+[hadoop@client36 Shreyas]$ hadoop fs -get /test/tst.txt ~/Desktop/Shreyas/tst.txt
+[hadoop@client36 Shreyas]$ ls -l
+total 16
+-rw-rw-r--. 1 hadoop hadoop 2924 Nov 24 14:43 a1.txt
+-rw-rw-r--. 1 hadoop hadoop   13 Nov 24 14:38 hello.txt
+-rw-rw-r--. 1 hadoop hadoop   10 Nov 24 14:41 test.txt
+-rw-r--r--. 1 hadoop hadoop   10 Nov 24 14:44 tst.txt
+b) put
+
+4. put
+
+[hadoop@client36 Shreyas]$ ls -l
+total 12
+-rw-rw-r--. 1 hadoop hadoop 2257 Nov 24 14:40 a1.txt
+-rw-rw-r--. 1 hadoop hadoop   13 Nov 24 14:38 hello.txt
+
+[hadoop@client36 Shreyas]$ hadoop fs -put hello.txt /test/
+
+[hadoop@client36 Shreyas]$ hadoop fs -ls /test
+
+Found 1 items
+-rw-r--r--   3 hadoop supergroup         13 2022-11-24 14:38 /test/hello.txt
+c) tail
+3. tail
+
+
+[hadoop@client36 Shreyas]$ hadoop fs -tail -f /test/h.txt
+Hieee
+.
+.
+.
+d) fsck
+11. fsck
+
+[hadoop@client36 Shreyas]$ hadoop fsck /
+DEPRECATED: Use of this script to execute hdfs command is deprecated.
+Instead use the hdfs command for it.
+
+Connecting to namenode via http://client36.hadoop.lan:50070/fsck?ugi=hadoop&path=%2F
+FSCK started by hadoop (auth:SIMPLE) from /192.168.100.123 for path / at Thu Nov 24 16:02:34 IST 2022
+.
+/AbhiDahi/a1.txt:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741839_1015. Target Replicas is 3 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+.
+/AbhiDahi/a5.txt:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741838_1014. Target Replicas is 3 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+.
+/Disha/a1.txt:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741834_1010. Target Replicas is 3 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+.
+/Hadoop_File:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741831_1007. Target Replicas is 3 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+.
+/Hadoop_File1:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741828_1004. Target Replicas is 3 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+.
+/Sakshi/Tejashree/a1.txt:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741833_1009. Target Replicas is 3 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+...
+/Tejashree/a1.txt:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741835_1011. Target Replicas is 3 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+.
+/Tejashree/a5.txt:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741837_1013. Target Replicas is 3 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+.
+/Tejashree1/a5.txt:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741836_1012. Target Replicas is 3 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+.
+/ha:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741832_1008. Target Replicas is 3 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+.
+/test/a2.txt:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741841_1017. Target Replicas is 5 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+.
+/test/a3.txt:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741842_1018. Target Replicas is 5 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+.
+/test/hello.txt:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741840_1016. Target Replicas is 5 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+Status: HEALTHY
+ Total size:	15934 B
+ Total dirs:	18
+ Total files:	15
+ Total symlinks:		0
+ Total blocks (validated):	13 (avg. block size 1225 B)
+ Minimally replicated blocks:	13 (100.0 %)
+ Over-replicated blocks:	0 (0.0 %)
+ Under-replicated blocks:	13 (100.0 %)
+ Mis-replicated blocks:		0 (0.0 %)
+ Default replication factor:	3
+ Average block replication:	1.0
+ Corrupt blocks:		0
+ Missing replicas:		32 (71.111115 %)
+ Number of data-nodes:		1
+ Number of racks:		1
+FSCK ended at Thu Nov 24 16:02:34 IST 2022 in 14 milliseconds
+
+
+The filesystem under path '/' is HEALTHY
+
+e) display the list of files in specified directory.(Create files and directory accordingly.)
+3. ls
+
+[hadoop@client36 Shreyas]$ hadoop fs -ls /
+Found 12 items
+drwxr-xr-x   - hadoop supergroup          0 2022-11-24 14:15 /AA
+drwxr-xr-x   - hadoop supergroup          0 2022-11-24 14:02 /AD
+drwxr-xr-x   - hadoop supergroup          0 2022-11-24 13:59 /AbhiDahi
+drwxr-xr-x   - hadoop supergroup          0 2022-11-24 14:24 /CC
+drwxr-xr-x   - hadoop supergroup          0 2022-11-19 15:13 /Disha
+-rw-r--r--   3 hadoop supergroup      15841 2022-11-19 14:44 /Hadoop_File
+-rw-r--r--   3 hadoop supergroup          7 2022-11-19 14:35 /Hadoop_File1
+drwxr-xr-x   - hadoop supergroup          0 2022-11-19 15:08 /Sakshi
+drwxr-xr-x   - hadoop supergroup          0 2022-11-19 15:34 /Tejashree
+drwxr-xr-x   - hadoop supergroup          0 2022-11-19 15:34 /Tejashree1
+-rw-r--r--   3 hadoop supergroup          7 2022-11-19 14:48 /ha
+drwxr-xr-x   - hadoop supergroup          0 2022-11-24 14:35 /test
+
+
+
+Sales.py
+from mrjob.job import MRJob
+
+class Sales(MRJob):
+    
+    def mapper(self, key, value):
+        record = value.split(',')
+        yield record[7], 1
+        
+    def reducer(self, key, values):
+        yield key, sum(values)
+        
+if __name__ == '__main__':
+    Sales.run()
+
+
+**************************************************** SLip 7*****************************************
+[hadoop@client36 Shreyas]$ cd $HADOOP_HOME/sbin/
+
+[hadoop@client36 sbin]$ ./start-dfs.sh
+Starting namenodes on [client36.hadoop.lan]
+client36.hadoop.lan: namenode running as process 6237. Stop it first.
+localhost: starting datanode, logging to /opt/hadoop/logs/hadoop-hadoop-datanode-client36.out
+Starting secondary namenodes [0.0.0.0]
+0.0.0.0: starting secondarynamenode, logging to /opt/hadoop/logs/hadoop-hadoop-secondarynamenode-client36.out
+
+[hadoop@client36 sbin]$ ./start-yarn.sh
+starting yarn daemons
+starting resourcemanager, logging to /opt/hadoop/logs/yarn-hadoop-resourcemanager-client36.out
+localhost: starting nodemanager, logging to /opt/hadoop/logs/yarn-hadoop-nodemanager-client36.out
+
+
+https://intellipaat.com/blog/tutorial/hadoop-tutorial/hdfs-operations/
+
+Q. 1) Execute the following HDFS commands on Hadoop environment.` [10]
+a) mkdir
+2. mkdir
+
+[hadoop@client36 Shreyas]$ hadoop fs -mkdir /test
+
+b) copy the demo.txt in hadoop environment.
+5. copyFromLocal
+
+[hadoop@client36 Shreyas]$ ls -l
+total 12
+-rw-rw-r--. 1 hadoop hadoop 2257 Nov 24 14:40 a1.txt
+-rw-rw-r--. 1 hadoop hadoop   13 Nov 24 14:38 hello.txt
+-rw-rw-r--. 1 hadoop hadoop   10 Nov 24 14:41 test.txt
+
+[hadoop@client36 Shreyas]$ hadoop fs -copyFromLocal ~/Desktop/Shreyas/test.txt /test/tst.txt
+
+[hadoop@client36 Shreyas]$ hadoop fs -ls /test
+Found 2 items
+-rw-r--r--   3 hadoop supergroup         13 2022-11-24 14:38 /test/hello.txt
+-rw-r--r--   3 hadoop supergroup         10 2022-11-24 14:42 /test/tst.txt
+4. put
+
+[hadoop@client36 Shreyas]$ ls -l
+total 12
+-rw-rw-r--. 1 hadoop hadoop 2257 Nov 24 14:40 a1.txt
+-rw-rw-r--. 1 hadoop hadoop   13 Nov 24 14:38 hello.txt
+
+[hadoop@client36 Shreyas]$ hadoop fs -put hello.txt /test/
+
+[hadoop@client36 Shreyas]$ hadoop fs -ls /test
+
+Found 1 items
+-rw-r--r--   3 hadoop supergroup         13 2022-11-24 14:38 /test/hello.txt
+
+
+c) move the directory into another directory.
+9. mv
+
+[hadoop@client36 Shreyas]$ hadoop fs -mv /test/tst.txt /test/a2.txt
+
+[hadoop@client36 Shreyas]$ hadoop fs -ls /test
+Found 2 items
+-rw-r--r--   3 hadoop supergroup         10 2022-11-24 14:42 /test/a2.txt
+-rw-r--r--   3 hadoop supergroup         13 2022-11-24 14:38 /test/hello.txt
+
+10. cp
+
+[hadoop@client36 Shreyas]$ hadoop fs -cp /test/a2.txt /test/a3.txt
+
+[hadoop@client36 Shreyas]$ hadoop fs -ls /test
+Found 3 items
+-rw-r--r--   3 hadoop supergroup         10 2022-11-24 14:42 /test/a2.txt
+-rw-r--r--   3 hadoop supergroup         10 2022-11-24 15:21 /test/a3.txt
+-rw-r--r--   3 hadoop supergroup         13 2022-11-24 14:38 /test/hello.txt
+
+
+d) tail
+3. tail
+
+
+[hadoop@client36 Shreyas]$ hadoop fs -tail -f /test/h.txt
+Hieee
+.
+.
+.
+e) delete file created in hadoop environment
+4. rm
+
+[hadoop@client36 Shreyas]$ hadoop fs -ls /test
+Found 4 items
+-rw-r--r--   3 hadoop supergroup         10 2022-11-24 14:42 /test/a2.txt
+-rw-r--r--   3 hadoop supergroup         10 2022-11-24 15:21 /test/a3.txt
+-rw-r--r--   3 hadoop supergroup          6 2022-11-24 15:30 /test/h.txt
+-rw-r--r--   3 hadoop supergroup         13 2022-11-24 14:38 /test/hello.txt
+
+[hadoop@client36 Shreyas]$ hadoop fs -rm /test/h.txt
+Deleted /test/h.txt
+
+
+WordCount.py
+from mrjob.job import MRJob
+
+class Count(MRJob):
+    def mapper(self, _, line):
+        for word in line.split():
+            yield(word, 1)
+    def reducer(self, word, counts):
+        yield(word, sum(counts))
+
+if __name__ == '__main__':
+    Count.run()
+
+
+bhaiyaa aise run krna hai
+[hadoop@client25 Assignment3]$ python3 WordCount.py -r hadoop hdfs:///test/data.txt
+
+
+from mrjob.job import MRJob
+from re import compile
+
+class WordCount(MRJob):
+
+    def mapper(self, key, value):
+        for word in value.split(','):
+            yield word.lower(), 1
+    
+    def reducer(self, key, values):
+        yield key, sum(values)
+        
+if __name__ == '__main__':
+    WordCount.run()
+
+******************************************* SLip 8***********************************8
+
+[hadoop@client36 Shreyas]$ cd $HADOOP_HOME/sbin/
+
+[hadoop@client36 sbin]$ ./start-dfs.sh
+Starting namenodes on [client36.hadoop.lan]
+client36.hadoop.lan: namenode running as process 6237. Stop it first.
+localhost: starting datanode, logging to /opt/hadoop/logs/hadoop-hadoop-datanode-client36.out
+Starting secondary namenodes [0.0.0.0]
+0.0.0.0: starting secondarynamenode, logging to /opt/hadoop/logs/hadoop-hadoop-secondarynamenode-client36.out
+
+[hadoop@client36 sbin]$ ./start-yarn.sh
+starting yarn daemons
+starting resourcemanager, logging to /opt/hadoop/logs/yarn-hadoop-resourcemanager-client36.out
+localhost: starting nodemanager, logging to /opt/hadoop/logs/yarn-hadoop-nodemanager-client36.out
+
+
+https://intellipaat.com/blog/tutorial/hadoop-tutorial/hdfs-operations/
+
+Q.1 Execute the following HDFS commands on Hadoop environment. [10]
+a) changing the group of ‘sample.zip’ file of the HDFS file system.
+ Create a zip file in local filesystem
+ 4. put
+
+[hadoop@client36 Shreyas]$ ls -l
+total 12
+-rw-rw-r--. 1 hadoop hadoop 2257 Nov 24 14:40 a1.txt
+-rw-rw-r--. 1 hadoop hadoop   13 Nov 24 14:38 hello.txt
+
+[hadoop@client36 Shreyas]$ hadoop fs -put hello.txt /test/
+
+[hadoop@client36 Shreyas]$ hadoop fs -ls /test
+
+Found 1 items
+-rw-r--r--   3 hadoop supergroup         13 2022-11-24 14:38 /test/hello.txt
+1. moveFromLocal
+
+[hadoop@client36 Shreyas]$ ls -l
+total 28
+-rw-rw-r--. 1 hadoop hadoop 4428 Nov 24 15:24 a1.txt
+-rw-rw-r--. 1 hadoop hadoop  703 Nov 24 15:26 a2.txt
+-rw-rw-r--. 1 hadoop hadoop   13 Nov 24 14:38 hello.txt
+-rw-r--r--. 1 hadoop hadoop    6 Nov 24 15:25 h.txt
+-rw-rw-r--. 1 hadoop hadoop   10 Nov 24 14:41 test.txt
+-rw-r--r--. 1 hadoop hadoop   10 Nov 24 14:44 tst.txt
+
+[hadoop@client36 Shreyas]$ hadoop fs -moveFromLocal ~/Desktop/Shreyas/h.txt /test/
+
+[hadoop@client36 Shreyas]$ hadoop fs -ls /test
+Found 4 items
+-rw-r--r--   3 hadoop supergroup         10 2022-11-24 14:42 /test/a2.txt
+-rw-r--r--   3 hadoop supergroup         10 2022-11-24 15:21 /test/a3.txt
+-rw-r--r--   3 hadoop supergroup          6 2022-11-24 15:30 /test/h.txt
+-rw-r--r--   3 hadoop supergroup         13 2022-11-24 14:38 /test/hello.txt
+7. chgrp
+
+[hadoop@client36 Shreyas]$ hadoop fs -ls /
+Found 12 items
+drwxr-xr-x   - hadoop supergroup          0 2022-11-24 14:15 /AA
+drwxr-xr-x   - hadoop supergroup          0 2022-11-24 14:02 /AD
+drwxr-xr-x   - hadoop supergroup          0 2022-11-24 13:59 /AbhiDahi
+drwxr-xr-x   - hadoop supergroup          0 2022-11-24 14:24 /CC
+drwxr-xr-x   - hadoop supergroup          0 2022-11-19 15:13 /Disha
+-rw-r--r--   3 hadoop supergroup      15841 2022-11-19 14:44 /Hadoop_File
+-rw-r--r--   3 hadoop supergroup          7 2022-11-19 14:35 /Hadoop_File1
+drwxr-xr-x   - hadoop supergroup          0 2022-11-19 15:08 /Sakshi
+drwxr-xr-x   - hadoop supergroup          0 2022-11-19 15:34 /Tejashree
+drwxr-xr-x   - hadoop supergroup          0 2022-11-19 15:34 /Tejashree1
+-rw-r--r--   3 hadoop supergroup          7 2022-11-19 14:48 /ha
+drwxr-xr-x   - sdf    supergroup          0 2022-11-24 15:43 /test
+
+[hadoop@client36 Shreyas]$ hadoop fs -chgrp hello /test
+
+b) changing the owner of a file name sample.
+6. chown
+
+[hadoop@client36 Shreyas]$ hadoop fs -ls /
+Found 12 items
+drwxr-xr-x   - hadoop supergroup          0 2022-11-24 14:15 /AA
+drwxr-xr-x   - hadoop supergroup          0 2022-11-24 14:02 /AD
+drwxr-xr-x   - hadoop supergroup          0 2022-11-24 13:59 /AbhiDahi
+drwxr-xr-x   - hadoop supergroup          0 2022-11-24 14:24 /CC
+drwxr-xr-x   - hadoop supergroup          0 2022-11-19 15:13 /Disha
+-rw-r--r--   3 hadoop supergroup      15841 2022-11-19 14:44 /Hadoop_File
+-rw-r--r--   3 hadoop supergroup          7 2022-11-19 14:35 /Hadoop_File1
+drwxr-xr-x   - hadoop supergroup          0 2022-11-19 15:08 /Sakshi
+drwxr-xr-x   - hadoop supergroup          0 2022-11-19 15:34 /Tejashree
+drwxr-xr-x   - hadoop supergroup          0 2022-11-19 15:34 /Tejashree1
+-rw-r--r--   3 hadoop supergroup          7 2022-11-19 14:48 /ha
+drwxr-xr-x   - hadoop supergroup          0 2022-11-24 15:43 /test
+
+[hadoop@client36 Shreyas]$ hadoop fs -chown sdf /test/
+
+[hadoop@client36 Shreyas]$ hadoop fs -ls /
+Found 12 items
+drwxr-xr-x   - hadoop supergroup          0 2022-11-24 14:15 /AA
+drwxr-xr-x   - hadoop supergroup          0 2022-11-24 14:02 /AD
+drwxr-xr-x   - hadoop supergroup          0 2022-11-24 13:59 /AbhiDahi
+drwxr-xr-x   - hadoop supergroup          0 2022-11-24 14:24 /CC
+drwxr-xr-x   - hadoop supergroup          0 2022-11-19 15:13 /Disha
+-rw-r--r--   3 hadoop supergroup      15841 2022-11-19 14:44 /Hadoop_File
+-rw-r--r--   3 hadoop supergroup          7 2022-11-19 14:35 /Hadoop_File1
+drwxr-xr-x   - hadoop supergroup          0 2022-11-19 15:08 /Sakshi
+drwxr-xr-x   - hadoop supergroup          0 2022-11-19 15:34 /Tejashree
+drwxr-xr-x   - hadoop supergroup          0 2022-11-19 15:34 /Tejashree1
+-rw-r--r--   3 hadoop supergroup          7 2022-11-19 14:48 /ha
+drwxr-xr-x   - sdf    supergroup          0 2022-11-24 15:43 /test
+
+c) prints a summary of the amount of disk usage of all files.
+9. du
+
+[hadoop@client36 Shreyas]$ hadoop fs -du /
+0      /AA
+0      /AD
+13     /AbhiDahi
+0      /CC
+7      /Disha
+15841  /Hadoop_File
+7      /Hadoop_File1
+7      /Sakshi
+13     /Tejashree
+6      /Tejashree1
+7      /ha
+33     /test
+
+d) show last modified time of directory
+4. stat
+
+[hadoop@client25 ~]$ hadoop fs -stat /test/test.txt
+2022-12-01 08:01:49
+
+e) implement test command
+2. test
+
+[hadoop@client29 Assignment2]$ hadoop fs -help test
+-test -[defsz] <path> :
+  Answer various questions about <path>, with result via exit status.
+    -d  return 0 if <path> is a directory.
+    -e  return 0 if <path> exists.
+    -f  return 0 if <path> is a file.
+    -s  return 0 if file <path> is greater         than zero bytes in size.
+    -w  return 0 if file <path> exists         and write permission is granted.
+    -r  return 0 if file <path> exists         and read permission is granted.
+    -z  return 0 if file <path> is         zero bytes in size, else return 1.
+
+[hadoop@client29 Assignment2]$ hadoop fs -test -e /test/test.txt
+[hadoop@client29 Assignment2]$ echo $?
+0
+[hadoop@client29 Assignment2]$ hadoop fs -test -e /test/test.sdf
+[hadoop@client29 Assignment2]$ echo $?
+1
+
+***************************************** SLip 9******************************88
+
+[hadoop@client36 Shreyas]$ cd $HADOOP_HOME/sbin/
+
+[hadoop@client36 sbin]$ ./start-dfs.sh
+Starting namenodes on [client36.hadoop.lan]
+client36.hadoop.lan: namenode running as process 6237. Stop it first.
+localhost: starting datanode, logging to /opt/hadoop/logs/hadoop-hadoop-datanode-client36.out
+Starting secondary namenodes [0.0.0.0]
+0.0.0.0: starting secondarynamenode, logging to /opt/hadoop/logs/hadoop-hadoop-secondarynamenode-client36.out
+
+[hadoop@client36 sbin]$ ./start-yarn.sh
+starting yarn daemons
+starting resourcemanager, logging to /opt/hadoop/logs/yarn-hadoop-resourcemanager-client36.out
+localhost: starting nodemanager, logging to /opt/hadoop/logs/yarn-hadoop-nodemanager-client36.out
+
+
+https://intellipaat.com/blog/tutorial/hadoop-tutorial/hdfs-operations/
+
+Q. 1 Execute the following HDFS commands on Hadoop environment. [10]
+a) create empty file in hdfs.
+  hadoop fs -touchz /directory/filename
+
+b) copy sample.txt from local environment to HDFS.
+   hadoop fs -touchz /directory/filename
+5. copyFromLocal
+
+[hadoop@client36 Shreyas]$ ls -l
+total 12
+-rw-rw-r--. 1 hadoop hadoop 2257 Nov 24 14:40 a1.txt
+-rw-rw-r--. 1 hadoop hadoop   13 Nov 24 14:38 hello.txt
+-rw-rw-r--. 1 hadoop hadoop   10 Nov 24 14:41 test.txt
+
+[hadoop@client36 Shreyas]$ hadoop fs -copyFromLocal ~/Desktop/Shreyas/test.txt /test/tst.txt
+
+[hadoop@client36 Shreyas]$ hadoop fs -ls /test
+Found 2 items
+-rw-r--r--   3 hadoop supergroup         13 2022-11-24 14:38 /test/hello.txt
+-rw-r--r--   3 hadoop supergroup         10 2022-11-24 14:42 /test/tst.txt
+
+4. put
+
+[hadoop@client36 Shreyas]$ ls -l
+total 12
+-rw-rw-r--. 1 hadoop hadoop 2257 Nov 24 14:40 a1.txt
+-rw-rw-r--. 1 hadoop hadoop   13 Nov 24 14:38 hello.txt
+
+[hadoop@client36 Shreyas]$ hadoop fs -put hello.txt /test/
+
+[hadoop@client36 Shreyas]$ hadoop fs -ls /test
+
+Found 1 items
+-rw-r--r--   3 hadoop supergroup         13 2022-11-24 14:38 /test/hello.txt
+
+c) print the content of sample.txt file.
+8. cat
+
+[hadoop@client36 Shreyas]$ hadoop fs -cat /test/hello.txt 
+Hello World!
+
+d) display the total size of file.
+4. stat
+
+[hadoop@client25 ~]$ hadoop fs -stat %b /test/test.txt
+2022-12-01 08:01:49
+
+
+e) chmod command
+7. chmod
+
+[hadoop@client25 ~]$ hadoop fs -ls /test/
+Found 1 items
+-rw-r--r--   3 hadoop supergroup         31 2022-12-01 13:31 /test/test.txt
+
+[hadoop@client25 ~]$ hadoop fs -chmod 0777 /test/test.txt
+
+[hadoop@client25 ~]$ hadoop fs -ls /test/
+Found 1 items
+-rwxrwxrwx   3 hadoop supergroup         31 2022-12-01 13:31 /test/test.txt
+
+***************************************Slip 10*********************************8
+[hadoop@client36 Shreyas]$ cd $HADOOP_HOME/sbin/
+
+[hadoop@client36 sbin]$ ./start-dfs.sh
+Starting namenodes on [client36.hadoop.lan]
+client36.hadoop.lan: namenode running as process 6237. Stop it first.
+localhost: starting datanode, logging to /opt/hadoop/logs/hadoop-hadoop-datanode-client36.out
+Starting secondary namenodes [0.0.0.0]
+0.0.0.0: starting secondarynamenode, logging to /opt/hadoop/logs/hadoop-hadoop-secondarynamenode-client36.out
+
+[hadoop@client36 sbin]$ ./start-yarn.sh
+starting yarn daemons
+starting resourcemanager, logging to /opt/hadoop/logs/yarn-hadoop-resourcemanager-client36.out
+localhost: starting nodemanager, logging to /opt/hadoop/logs/yarn-hadoop-nodemanager-client36.out
+
+
+https://intellipaat.com/blog/tutorial/hadoop-tutorial/hdfs-operations/
+
+Q.1 Execute the following HDFS commands on Hadoop environment. [10]
+a) copy one file from one directory to another within HDFS.
+  10. cp
+
+[hadoop@client36 Shreyas]$ hadoop fs -cp /test/a2.txt /test/a3.txt
+
+[hadoop@client36 Shreyas]$ hadoop fs -ls /test
+Found 3 items
+-rw-r--r--   3 hadoop supergroup         10 2022-11-24 14:42 /test/a2.txt
+-rw-r--r--   3 hadoop supergroup         10 2022-11-24 15:21 /test/a3.txt
+-rw-r--r--   3 hadoop supergroup         13 2022-11-24 14:38 /test/hello.txt
+
+
+
+
+b) show the statistics about the directory in the specified format.(%b,%g,%u,%n)
+ 4. stat
+
+[hadoop@client25 ~]$ hadoop fs -stat %b /test/test.txt filesize in bytes
+[hadoop@client25 ~]$ hadoop fs -stat %n /test/test.txt filename
+[hadoop@client25 ~]$ hadoop fs -stat %g /test/test.txt group name of owner
+[hadoop@client25 ~]$ hadoop fs -stat %u /test/test.txt username of owner
+2022-12-01 08:01:49
+
+c) implement text command.
+3. text
+
+[hadoop@client25 ~]$ hadoop fs -text /test/test.txt
+Test file.
+This a second line.
+d) fsck
+11. fsck
+
+[hadoop@client36 Shreyas]$ hadoop fsck /
+DEPRECATED: Use of this script to execute hdfs command is deprecated.
+Instead use the hdfs command for it.
+
+Connecting to namenode via http://client36.hadoop.lan:50070/fsck?ugi=hadoop&path=%2F
+FSCK started by hadoop (auth:SIMPLE) from /192.168.100.123 for path / at Thu Nov 24 16:02:34 IST 2022
+.
+/AbhiDahi/a1.txt:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741839_1015. Target Replicas is 3 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+.
+/AbhiDahi/a5.txt:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741838_1014. Target Replicas is 3 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+.
+/Disha/a1.txt:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741834_1010. Target Replicas is 3 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+.
+/Hadoop_File:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741831_1007. Target Replicas is 3 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+.
+/Hadoop_File1:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741828_1004. Target Replicas is 3 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+.
+/Sakshi/Tejashree/a1.txt:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741833_1009. Target Replicas is 3 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+...
+/Tejashree/a1.txt:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741835_1011. Target Replicas is 3 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+.
+/Tejashree/a5.txt:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741837_1013. Target Replicas is 3 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+.
+/Tejashree1/a5.txt:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741836_1012. Target Replicas is 3 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+.
+/ha:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741832_1008. Target Replicas is 3 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+.
+/test/a2.txt:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741841_1017. Target Replicas is 5 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+.
+/test/a3.txt:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741842_1018. Target Replicas is 5 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+.
+/test/hello.txt:  Under replicated BP-793620210-192.168.100.123-1668241837815:blk_1073741840_1016. Target Replicas is 5 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+Status: HEALTHY
+ Total size:	15934 B
+ Total dirs:	18
+ Total files:	15
+ Total symlinks:		0
+ Total blocks (validated):	13 (avg. block size 1225 B)
+ Minimally replicated blocks:	13 (100.0 %)
+ Over-replicated blocks:	0 (0.0 %)
+ Under-replicated blocks:	13 (100.0 %)
+ Mis-replicated blocks:		0 (0.0 %)
+ Default replication factor:	3
+ Average block replication:	1.0
+ Corrupt blocks:		0
+ Missing replicas:		32 (71.111115 %)
+ Number of data-nodes:		1
+ Number of racks:		1
+FSCK ended at Thu Nov 24 16:02:34 IST 2022 in 14 milliseconds
+
+
+The filesystem under path '/' is HEALTHY
+
+e) cat command
+8. cat
+
+[hadoop@client36 Shreyas]$ hadoop fs -cat /test/hello.txt 
+Hello World!
+
+
+
+
+
+from mrjob.job import MRJob
+
+class Emp(MRJob):
+    
+    def mapper(self, key, value):
+        record = value.split(',')
+        yield record[3], 1
+        
+    def reducer(self, key, values):
+        yield key, sum(values)
+        
+if __name__ == '__main__':
+    Emp.run()
+
+
+***************************************************
+from mrjob.job import MRJob
+
+class EmployeeStats(MRJob):
+    
+    def mapper(self, key, value):
+        try:
+            id, _, _, sal, dept_id = value.split(',')
+            yield int(dept_id), float(sal)
+        except ValueError:
+            pass
+        
+    def reducer(self, key, values):
+        val = list(values)
+        yield f'Department ID {key}', f'Max: ${max(val)}, Min: ${min(val)}'
+        
+if __name__ == '__main__':
+    EmployeeStats.run()
+
+****************************** SLip 11****************************************
+
+[hadoop@client36 Shreyas]$ cd $HADOOP_HOME/sbin/
+
+[hadoop@client36 sbin]$ ./start-dfs.sh
+Starting namenodes on [client36.hadoop.lan]
+client36.hadoop.lan: namenode running as process 6237. Stop it first.
+localhost: starting datanode, logging to /opt/hadoop/logs/hadoop-hadoop-datanode-client36.out
+Starting secondary namenodes [0.0.0.0]
+0.0.0.0: starting secondarynamenode, logging to /opt/hadoop/logs/hadoop-hadoop-secondarynamenode-client36.out
+
+[hadoop@client36 sbin]$ ./start-yarn.sh
+starting yarn daemons
+starting resourcemanager, logging to /opt/hadoop/logs/yarn-hadoop-resourcemanager-client36.out
+localhost: starting nodemanager, logging to /opt/hadoop/logs/yarn-hadoop-nodemanager-client36.out
+
+
+https://intellipaat.com/blog/tutorial/hadoop-tutorial/hdfs-operations/
+
+Q.1) Execute the following HDFS commands on Hadoop environment. [10]
+a) display summary of the amount of disk usage of all files.
+9. du
+
+[hadoop@client36 Shreyas]$ hadoop fs -du /
+0      /AA
+0      /AD
+13     /AbhiDahi
+0      /CC
+7      /Disha
+15841  /Hadoop_File
+7      /Hadoop_File1
+7      /Sakshi
+13     /Tejashree
+6      /Tejashree1
+7      /ha
+33     /test
+b) change the permission of the file.
+7. chmod
+
+[hadoop@client25 ~]$ hadoop fs -ls /test/
+Found 1 items
+-rw-r--r--   3 hadoop supergroup         31 2022-12-01 13:31 /test/test.txt
+
+[hadoop@client25 ~]$ hadoop fs -chmod 0777 /test/test.txt
+
+[hadoop@client25 ~]$ hadoop fs -ls /test/
+Found 1 items
+-rwxrwxrwx   3 hadoop supergroup         31 2022-12-01 13:31 /test/test.txt
+
+c) Create an employee.txt file with some content and Moves this file from local file
+system to the Hadoop file system.
+  create txt with text in localfs
+  movefromlocal
+
+1. moveFromLocal
+
+[hadoop@client36 Shreyas]$ ls -l
+total 28
+-rw-rw-r--. 1 hadoop hadoop 4428 Nov 24 15:24 a1.txt
+-rw-rw-r--. 1 hadoop hadoop  703 Nov 24 15:26 a2.txt
+-rw-rw-r--. 1 hadoop hadoop   13 Nov 24 14:38 hello.txt
+-rw-r--r--. 1 hadoop hadoop    6 Nov 24 15:25 h.txt
+-rw-rw-r--. 1 hadoop hadoop   10 Nov 24 14:41 test.txt
+-rw-r--r--. 1 hadoop hadoop   10 Nov 24 14:44 tst.txt
+
+[hadoop@client36 Shreyas]$ hadoop fs -moveFromLocal ~/Desktop/Shreyas/h.txt /test/
+
+[hadoop@client36 Shreyas]$ hadoop fs -ls /test
+Found 4 items
+-rw-r--r--   3 hadoop supergroup         10 2022-11-24 14:42 /test/a2.txt
+-rw-r--r--   3 hadoop supergroup         10 2022-11-24 15:21 /test/a3.txt
+-rw-r--r--   3 hadoop supergroup          6 2022-11-24 15:30 /test/h.txt
+-rw-r--r--   3 hadoop supergroup         13 2022-11-24 14:38 /test/hello.txt
+
+ 4. put
+
+[hadoop@client36 Shreyas]$ ls -l
+total 12
+-rw-rw-r--. 1 hadoop hadoop 2257 Nov 24 14:40 a1.txt
+-rw-rw-r--. 1 hadoop hadoop   13 Nov 24 14:38 hello.txt
+
+[hadoop@client36 Shreyas]$ hadoop fs -put hello.txt /test/
+
+[hadoop@client36 Shreyas]$ hadoop fs -ls /test
+
+Found 1 items
+-rw-r--r--   3 hadoop supergroup         13 2022-11-24 14:38 /test/hello.txt
+
+d) copy one file from one directory to another within HDFS.
+10. cp
+
+[hadoop@client36 Shreyas]$ hadoop fs -cp /test/a2.txt /test/a3.txt
+
+[hadoop@client36 Shreyas]$ hadoop fs -ls /test
+Found 3 items
+-rw-r--r--   3 hadoop supergroup         10 2022-11-24 14:42 /test/a2.txt
+-rw-r--r--   3 hadoop supergroup         10 2022-11-24 15:21 /test/a3.txt
+-rw-r--r--   3 hadoop supergroup         13 2022-11-24 14:38 /test/hello.txt
+
+
+e) display last 1kb data of employee.txt file.
+3. tail
+[hadoop@client36 Shreyas]$ hadoop fs -tail -f /test/h.txt
+Hieee
+.
+.
+.
+
+
+****************************************** Slip 12********************************
+
+[hadoop@client36 Shreyas]$ cd $HADOOP_HOME/sbin/
+
+[hadoop@client36 sbin]$ ./start-dfs.sh
+Starting namenodes on [client36.hadoop.lan]
+client36.hadoop.lan: namenode running as process 6237. Stop it first.
+localhost: starting datanode, logging to /opt/hadoop/logs/hadoop-hadoop-datanode-client36.out
+Starting secondary namenodes [0.0.0.0]
+0.0.0.0: starting secondarynamenode, logging to /opt/hadoop/logs/hadoop-hadoop-secondarynamenode-client36.out
+
+[hadoop@client36 sbin]$ ./start-yarn.sh
+starting yarn daemons
+starting resourcemanager, logging to /opt/hadoop/logs/yarn-hadoop-resourcemanager-client36.out
+localhost: starting nodemanager, logging to /opt/hadoop/logs/yarn-hadoop-nodemanager-client36.out
+
+
+https://intellipaat.com/blog/tutorial/hadoop-tutorial/hdfs-operations/
+
+Q.1) Execute the following HDFS commands on Hadoop environment. [10]
+a. create patient_detalis.txt file in Hospital directory and move this file in another
+directory within hdfs.
+  2. mkdir
+
+[hadoop@client36 Shreyas]$ hadoop fs -mkdir /hospital
+ touchz
+ hadoop fs -touchz /hospital/patient.txt
+ 2. mkdir
+
+[hadoop@client36 Shreyas]$ hadoop fs -mkdir /test
+9. mv
+
+[hadoop@client36 Shreyas]$ hadoop fs -mv /test/tst.txt /test/a2.txt
+
+[hadoop@client36 Shreyas]$ hadoop fs -ls /test
+Found 2 items
+-rw-r--r--   3 hadoop supergroup         10 2022-11-24 14:42 /test/a2.txt
+-rw-r--r--   3 hadoop supergroup         13 2022-11-24 14:38 /test/hello.txt
+
+b. display the total size of Hospital directory.
+
+4. stat
+
+[hadoop@client25 ~]$ hadoop fs -stat %b /hospital
+2022-12-01 08:01:49
+
+c. show the statistics about the directory in the specified format.(%o,%r,%u,%y)
+[hadoop@client25 ~]$ hadoop fs -stat %o /hospital blocksize
+[hadoop@client25 ~]$ hadoop fs -stat %r /hospital replication
+[hadoop@client25 ~]$ hadoop fs -stat %u /hospital username of owner
+[hadoop@client25 ~]$ hadoop fs -stat %y /hospital modification date
+
+d. list of all files in hospital directory.(add and list a minimum 4 files).
+ 3. ls
+
+[hadoop@client36 Shreyas]$ hadoop fs -ls /hospital
+
+e. delete hospital directory.
+4. rm
+
+[hadoop@client36 Shreyas]$ hadoop fs -ls /test
+Found 4 items
+-rw-r--r--   3 hadoop supergroup         10 2022-11-24 14:42 /test/a2.txt
+-rw-r--r--   3 hadoop supergroup         10 2022-11-24 15:21 /test/a3.txt
+-rw-r--r--   3 hadoop supergroup          6 2022-11-24 15:30 /test/h.txt
+-rw-r--r--   3 hadoop supergroup         13 2022-11-24 14:38 /test/hello.txt
+
+[hadoop@client36 Shreyas]$ hadoop fs -rm /hospital
+Deleted /test/h.txt
+
+
+
+from mrjob.job import MRJob
+
+class Emp(MRJob):
+    
+    def mapper(self, key, value):
+        record = value.split(',')
+        yield record[3], 1
+        
+    def reducer(self, key, values):
+        yield key, sum(values)
+        
+if __name__ == '__main__':
+    Emp.run()
+
+**********************************************
+from mrjob.job import MRJob
+
+class EmployeeStats(MRJob):
+    
+    def mapper(self, key, value):
+        try:
+            _, _, _, dept_id = value.split(',')
+            yield int(dept_id), 1
+        except ValueError:
+            pass
+        
+    def reducer(self, key, values):
+        yield f'Department ID {key}', f'No. of employees: {sum(values)}'
+        
+if __name__ == '__main__':
+    EmployeeStats.run()
+
+******************************************* SLip13***********************************
+
+[hadoop@client36 Shreyas]$ cd $HADOOP_HOME/sbin/
+
+[hadoop@client36 sbin]$ ./start-dfs.sh
+Starting namenodes on [client36.hadoop.lan]
+client36.hadoop.lan: namenode running as process 6237. Stop it first.
+localhost: starting datanode, logging to /opt/hadoop/logs/hadoop-hadoop-datanode-client36.out
+Starting secondary namenodes [0.0.0.0]
+0.0.0.0: starting secondarynamenode, logging to /opt/hadoop/logs/hadoop-hadoop-secondarynamenode-client36.out
+
+[hadoop@client36 sbin]$ ./start-yarn.sh
+starting yarn daemons
+starting resourcemanager, logging to /opt/hadoop/logs/yarn-hadoop-resourcemanager-client36.out
+localhost: starting nodemanager, logging to /opt/hadoop/logs/yarn-hadoop-nodemanager-client36.out
+
+
+https://intellipaat.com/blog/tutorial/hadoop-tutorial/hdfs-operations/
+
+Q.1) Execute the following HDFS commands on Hadoop environment. [10]
+a) Create a college.txt file in root directory and move this file in Hadoop environment.
+  create file in local fs
+  1. moveFromLocal
+
+[hadoop@client36 Shreyas]$ ls -l
+total 28
+-rw-rw-r--. 1 hadoop hadoop 4428 Nov 24 15:24 a1.txt
+-rw-rw-r--. 1 hadoop hadoop  703 Nov 24 15:26 a2.txt
+-rw-rw-r--. 1 hadoop hadoop   13 Nov 24 14:38 hello.txt
+-rw-r--r--. 1 hadoop hadoop    6 Nov 24 15:25 h.txt
+-rw-rw-r--. 1 hadoop hadoop   10 Nov 24 14:41 test.txt
+-rw-r--r--. 1 hadoop hadoop   10 Nov 24 14:44 tst.txt
+
+[hadoop@client36 Shreyas]$ hadoop fs -moveFromLocal ~/Desktop/Shreyas/h.txt /test/
+
+[hadoop@client36 Shreyas]$ hadoop fs -ls /test
+Found 4 items
+-rw-r--r--   3 hadoop supergroup         10 2022-11-24 14:42 /test/a2.txt
+-rw-r--r--   3 hadoop supergroup         10 2022-11-24 15:21 /test/a3.txt
+-rw-r--r--   3 hadoop supergroup          6 2022-11-24 15:30 /test/h.txt
+-rw-r--r--   3 hadoop supergroup         13 2022-11-24 14:38 /test/hello.txt
+4. put
+
+[hadoop@client36 Shreyas]$ ls -l
+total 12
+-rw-rw-r--. 1 hadoop hadoop 2257 Nov 24 14:40 a1.txt
+-rw-rw-r--. 1 hadoop hadoop   13 Nov 24 14:38 hello.txt
+
+[hadoop@client36 Shreyas]$ hadoop fs -put hello.txt /test/
+
+[hadoop@client36 Shreyas]$ hadoop fs -ls /test
+
+Found 1 items
+-rw-r--r--   3 hadoop supergroup         13 2022-11-24 14:38 /test/hello.txt
+
+
+b) Count the number of files and directories in HDFS.(use specified format as option
+-v,-h,-q)
+ 10. count
+
+[hadoop@client25 ~]$ hadoop fs -count /test/t.txt
+          25           28              12214 /
+
+[hadoop@client25 ~]$ hadoop fs -count -v /test/t.txt  shows headerline
+[hadoop@client25 ~]$ hadoop fs -count -h /test/t.txt shows sizez in human readable format
+[hadoop@client25 ~]$ hadoop fs -count -q /test/t.txt shows quotes
+
+c) du command
+
+9. du
+
+[hadoop@client36 Shreyas]$ hadoop fs -du /
+0      /AA
+0      /AD
+13     /AbhiDahi
+0      /CC
+7      /Disha
+15841  /Hadoop_File
+7      /Hadoop_File1
+7      /Sakshi
+13     /Tejashree
+6      /Tejashree1
+7      /ha
+33     /test
+
+d) implement find command for college.txt
+11. find
+
+[hadoop@client25 ~]$ hadoop fs -find / test
+/
+/AA
+/AA/AA
+/AA/AA/a1.tx
+/Abhi
+/Abhi/a2.txt
+/Abhishek1
+/Abhishek2
+/Abhishek2/a1.txt
+/Abhishek2/a2.txt
+/Aish
+/Aish/abc.txt
+/Aishwarya
+/Aishwarya1
+/Aishwarya1/abc.txt
+/Aishwarya1/moveTo
+/Aishwarya1/moveTo/moved.txt
+/Aishwarya1/xyz.txt
+/F1
+/Hadoop_File
+/Sakshi
+/Sakshi1
+/Sakshi1/a2.txt
+/elevennov
+/elevennov/data1.txt
+/elevennov/demo.txt
+/f1
+/f2
+/f2/a2.txt
+/f3
+/f3/a1.txt
+/f3/a2.txt
+/msc
+/pj
+/pj2
+/pj2/moveTo
+/pj2/moveTo/moved.txt
+/pj2/moveTo/moved_cp.txt
+/pj2/welcome1.txt
+/prasad
+/prasad20
+/prasadj
+/sk
+/sk2
+/sonu
+/sonu/data.txt
+/sonu/hello1.txt
+/sonu/moveTo
+/sonu/moveTo/data.txt
+/sonu/moveTo/moved.txt
+/sonu/moveTo/moved_cp.txt
+/test
+/test/test.txt
+find: `test': No such file or directory
+
+e) Remove a bank_details directory from Hadoop environment. (Create a bank_details
+directory).
+ 4. rm
+
+[hadoop@client36 Shreyas]$ hadoop fs -ls /test
+Found 4 items
+-rw-r--r--   3 hadoop supergroup         10 2022-11-24 14:42 /test/a2.txt
+-rw-r--r--   3 hadoop supergroup         10 2022-11-24 15:21 /test/a3.txt
+-rw-r--r--   3 hadoop supergroup          6 2022-11-24 15:30 /test/h.txt
+-rw-r--r--   3 hadoop supergroup         13 2022-11-24 14:38 /test/hello.txt
+
+[hadoop@client36 Shreyas]$ hadoop fs -rm /test/h.txt
+Deleted /test/h.txt
+
+
+Sales.py
+from mrjob.job import MRJob
+
+class Sales(MRJob):
+    
+    def mapper(self, key, value):
+        record = value.split(',')
+        yield record[7], 1
+        
+    def reducer(self, key, values):
+        yield key, sum(values)
+        
+if __name__ == '__main__':
+    Sales.run()
+
+
+*********************************************** SLip 14**********************************
+
+[hadoop@client36 Shreyas]$ cd $HADOOP_HOME/sbin/
+
+[hadoop@client36 sbin]$ ./start-dfs.sh
+Starting namenodes on [client36.hadoop.lan]
+client36.hadoop.lan: namenode running as process 6237. Stop it first.
+localhost: starting datanode, logging to /opt/hadoop/logs/hadoop-hadoop-datanode-client36.out
+Starting secondary namenodes [0.0.0.0]
+0.0.0.0: starting secondarynamenode, logging to /opt/hadoop/logs/hadoop-hadoop-secondarynamenode-client36.out
+
+[hadoop@client36 sbin]$ ./start-yarn.sh
+starting yarn daemons
+starting resourcemanager, logging to /opt/hadoop/logs/yarn-hadoop-resourcemanager-client36.out
+localhost: starting nodemanager, logging to /opt/hadoop/logs/yarn-hadoop-nodemanager-client36.out
+
+
+https://intellipaat.com/blog/tutorial/hadoop-tutorial/hdfs-operations/
+
+Q.1) Execute the following HDFS commands on Hadoop environment. [10]
+a) Create a teacher.txt file in Hadoop environment and copy this file in root directory.
+ create a file in hdfs using touchz
+  hadoop fs -touchz teacher.txt
+  6. get
+
+[hadoop@client36 Shreyas]$ hadoop fs -get /test/tst.txt ~/Desktop/Shreyas/tst.txt
+[hadoop@client36 Shreyas]$ ls -l
+total 16
+-rw-rw-r--. 1 hadoop hadoop 2924 Nov 24 14:43 a1.txt
+-rw-rw-r--. 1 hadoop hadoop   13 Nov 24 14:38 hello.txt
+-rw-rw-r--. 1 hadoop hadoop   10 Nov 24 14:41 test.txt
+-rw-r--r--. 1 hadoop hadoop   10 Nov 24 14:44 tst.txt
+
+7. copyToLocal
+
+[hadoop@client36 Shreyas]$ hadoop fs -copyToLocal /test/hello.txt ~/Desktop/Shreyas/h.txt
+
+[hadoop@client36 Shreyas]$ ls -l
+total 20
+-rw-rw-r--. 1 hadoop hadoop 3291 Nov 24 14:44 a1.txt
+-rw-rw-r--. 1 hadoop hadoop   13 Nov 24 14:38 hello.txt
+-rw-r--r--. 1 hadoop hadoop   13 Nov 24 14:46 h.txt
+-rw-rw-r--. 1 hadoop hadoop   10 Nov 24 14:41 test.txt
+-rw-r--r--. 1 hadoop hadoop   10 Nov 24 14:44 tst.txt
+
+b) display the content of teacher.txt file.
+8. cat
+
+[hadoop@client36 Shreyas]$ hadoop fs -cat /test/hello.txt 
+Hello World!
+
+
+
+c) display the list of files in specified directory.(Create files and directory accordingly.)
+  hadoop fs -touchz /a.txt
+  hadoop fs -mkdir /home  
+
+hadoop fs -ls /directory
+d) implement tail command on teacher.txt file.
+3. tail
+
+
+[hadoop@client36 Shreyas]$ hadoop fs -tail -f /test/h.txt
+Hieee
+.
+.
+.
+e) remove teacher.txt file from directory.
+4. rm
+
+[hadoop@client36 Shreyas]$ hadoop fs -ls /test
+Found 4 items
+-rw-r--r--   3 hadoop supergroup         10 2022-11-24 14:42 /test/a2.txt
+-rw-r--r--   3 hadoop supergroup         10 2022-11-24 15:21 /test/a3.txt
+-rw-r--r--   3 hadoop supergroup          6 2022-11-24 15:30 /test/h.txt
+-rw-r--r--   3 hadoop supergroup         13 2022-11-24 14:38 /test/hello.txt
+
+[hadoop@client36 Shreyas]$ hadoop fs -rm /test/h.txt
+Deleted /test/h.txt
+
+
+from mrjob.job import MRJob
+
+class WeatherStats(MRJob):
+    
+    def mapper(self, key, value):
+        try:
+            d, tmax, tmin, tavg = value.split(',')
+            yield d, float(tavg)
+        except ValueError:
+            pass
+
+    def reducer(self, key, values):
+        for avg in values:
+            yield key, "Cool" if avg < 50 else "Shiny"
+        
+if __name__ == '__main__':
+    WeatherStats.run()
+
+*********************************************************SLip 15 **********************************************
+
+[hadoop@client36 Shreyas]$ cd $HADOOP_HOME/sbin/
+
+[hadoop@client36 sbin]$ ./start-dfs.sh
+Starting namenodes on [client36.hadoop.lan]
+client36.hadoop.lan: namenode running as process 6237. Stop it first.
+localhost: starting datanode, logging to /opt/hadoop/logs/hadoop-hadoop-datanode-client36.out
+Starting secondary namenodes [0.0.0.0]
+0.0.0.0: starting secondarynamenode, logging to /opt/hadoop/logs/hadoop-hadoop-secondarynamenode-client36.out
+
+[hadoop@client36 sbin]$ ./start-yarn.sh
+starting yarn daemons
+starting resourcemanager, logging to /opt/hadoop/logs/yarn-hadoop-resourcemanager-client36.out
+localhost: starting nodemanager, logging to /opt/hadoop/logs/yarn-hadoop-nodemanager-client36.out
+
+
+https://intellipaat.com/blog/tutorial/hadoop-tutorial/hdfs-operations/
+
+Q.1) Execute the following HDFS commands on Hadoop environment. [10]
+a) create and move the bank directory into another directory within hadoop environment.
+   hadoop fs -mkdir /emp
+   hadoop fs -mkdir /cust
+   hadoop fs -mkdir /bank
+
+  hadoop fs -mv /bank /emp
+b) change the permission of the file.
+  
+  hadoop fs -chmod /dir/filename
+c) Display last few lines of the above customer.txt file.
+
+ hadoop fs -tail /dir/filename
+
+d) change the replication factor of customer.txt file in HDFS.
+ 
+  hadoop fs -setrp 
+8. setrep
+
+[hadoop@client36 Shreyas]$ hadoop fs -setrep 5 /test
+Replication 5 set: /test/a2.txt
+Replication 5 set: /test/a3.txt
+Replication 5 set: /test/hello.txt
+e) delete bank directory from HDFS.
+ hadoop fs -rm /bank
+
+
+
+WordCount.py
+from mrjob.job import MRJob
+
+class Count(MRJob):
+    def mapper(self, _, line):
+        for word in line.split():
+            yield(word, 1)
+    def reducer(self, word, counts):
+        yield(word, sum(counts))
+
+if __name__ == '__main__':
+    Count.run()
+
+
+bhaiyaa aise run krna hai
+[hadoop@client25 Assignment3]$ python3 WordCount.py -r hadoop hdfs:///test/data.txt
+
+*******************************************
+from mrjob.job import MRJob
+from re import compile
+
+WORD_RE = compile(r"[\w']+")
+
+class WordCount(MRJob):
+
+    def mapper(self, key, value):
+        for word in WORD_RE.findall(value):
+            yield word.lower(), 1
+    
+    def reducer(self, key, values):
+        yield key, sum(values)
+        
+if __name__ == '__main__':
+    WordCount.run() 
+
+
+
+
+
+
+
+
+
+
